@@ -1,0 +1,13 @@
+{
+  "name": "viralclippers",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently -n client,api,worker -c magenta,cyan,yellow \"npm --prefix client run dev\" \"npm --prefix server run dev\" \"npm --prefix server run worker\"",
+    "check": "npm --prefix client run check && npm --prefix server run check",
+    "install:all": "npm --prefix client install && npm --prefix server install"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}
