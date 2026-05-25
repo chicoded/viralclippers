@@ -1,9 +1,13 @@
 import path from "path";
-import { fileURLToPath } from "url";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const cwd = process.cwd();
+const isMonorepoServerCwd = path.basename(cwd).toLowerCase() === "server";
+export const repoRootDir = isMonorepoServerCwd ? path.resolve(cwd, "..") : cwd;
 
-export const repoRootDir = path.resolve(__dirname, "..", "..");
-export const uploadsDir = path.join(repoRootDir, "uploads");
-export const outputsDir = path.join(repoRootDir, "outputs");
+export const uploadsDir = process.env.UPLOADS_DIR
+  ? path.resolve(process.env.UPLOADS_DIR)
+  : path.join(repoRootDir, "uploads");
+
+export const outputsDir = process.env.OUTPUTS_DIR
+  ? path.resolve(process.env.OUTPUTS_DIR)
+  : path.join(repoRootDir, "outputs");
