@@ -1,6 +1,7 @@
 import fs from "fs";
-import { getOpenAIClient } from "./openai.js";
+import { getOpenAIClient, hasOpenAIKey } from "./openai.js";
 import type { TranscriptSegment } from "./types.js";
+import { transcribeWithWhisperCpp } from "./whisperCpp.js";
 
 export type TranscriptionResult = {
   text: string;
@@ -8,6 +9,10 @@ export type TranscriptionResult = {
 };
 
 export async function transcribeAudioWhisper(audioPath: string): Promise<TranscriptionResult> {
+  if (!hasOpenAIKey()) {
+    return transcribeWithWhisperCpp(audioPath);
+  }
+
   const openai = getOpenAIClient();
 
   const fileStream = fs.createReadStream(audioPath);
@@ -32,4 +37,3 @@ export async function transcribeAudioWhisper(audioPath: string): Promise<Transcr
 
   return { text, segments };
 }
-

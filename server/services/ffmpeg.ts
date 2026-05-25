@@ -39,6 +39,18 @@ export async function extractAudioToMp3(inputVideoPath: string, outputAudioPath:
   });
 }
 
+export async function extractAudioToWav(inputVideoPath: string, outputAudioPath: string) {
+  await ensureDir(path.dirname(outputAudioPath));
+  return new Promise<void>((resolve, reject) => {
+    ffmpeg(inputVideoPath)
+      .noVideo()
+      .outputOptions(["-ac 1", "-ar 16000", "-c:a pcm_s16le"])
+      .save(outputAudioPath)
+      .on("end", () => resolve())
+      .on("error", (err: unknown) => reject(err));
+  });
+}
+
 export async function cutClipToMp4(opts: {
   inputVideoPath: string;
   outputClipPath: string;

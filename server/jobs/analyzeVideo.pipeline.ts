@@ -2,7 +2,7 @@ import path from "path";
 import { randomUUID } from "crypto";
 import {
   ensureDir,
-  extractAudioToMp3,
+  extractAudioToWav,
   generateThumbnailJpg,
   getVideoDurationSec,
   cutClipToMp4
@@ -62,8 +62,8 @@ export async function runAnalyzeVideoPipeline(opts: {
 
   await opts.onUpdate({ step: "transcribing", progress: 5, message: "Extracting audio…", videoId: opts.videoId }, "active");
 
-  const audioPath = path.join(tmpDir, "audio.mp3");
-  await extractAudioToMp3(existing.video.uploadPath, audioPath);
+  const audioPath = path.join(tmpDir, "audio.wav");
+  await extractAudioToWav(existing.video.uploadPath, audioPath);
 
   await update("transcribing", 20, "Transcribing audio (Whisper)…");
   const transcript = await transcribeAudioWhisper(audioPath);
