@@ -11,6 +11,6 @@
     "resolveJsonModule": true,
     "skipLibCheck": true
   },
-  "include": ["src/**/*.ts", "jobs/**/*.ts", "services/**/*.ts"],
+  "include": ["src/**/*.ts", "src/**/*.d.ts", "jobs/**/*.ts", "jobs/**/*.d.ts", "services/**/*.ts", "services/**/*.d.ts"],
   "exclude": ["node_modules", "dist"]
 }

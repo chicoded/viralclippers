@@ -1,6 +1,7 @@
 import fs from "fs/promises";
 import path from "path";
 import { outputsDir, uploadsDir } from "./paths.js";
+import type { ClipRecord, TranscriptSegment } from "./types.js";
 
 export type VideoRecord = {
   id: string;
@@ -13,7 +14,11 @@ export type VideoRecord = {
 
 export type VideoMetadata = {
   video: VideoRecord;
-  clips: unknown[];
+  clips: ClipRecord[];
+  transcript?: {
+    text: string;
+    segments: TranscriptSegment[];
+  };
 };
 
 export async function ensureDir(dirPath: string) {

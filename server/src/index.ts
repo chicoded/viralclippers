@@ -7,7 +7,7 @@ import { randomUUID } from "crypto";
 import fs from "fs";
 import { enqueueAnalyzeVideo, getAnalyzeJobStatus } from "../jobs/jobManager.js";
 import { outputsDir, uploadsDir } from "../services/paths.js";
-import { ensureDir, getVideoUploadDir, writeVideoMetadata } from "../services/storage.js";
+import { ensureDir, getVideoUploadDir, readVideoMetadata, writeVideoMetadata } from "../services/storage.js";
 
 const app = express();
 
@@ -82,6 +82,8 @@ app.post("/api/upload", async (req, res) => {
 // Enqueues the analysis pipeline (Bull if Redis is configured, otherwise in-memory fallback).
 app.post("/api/analyze/:id", async (req, res) => {
   const videoId = req.params.id;
+  const existing = await readVideoMetadata(videoId);
+  if (!existing) return res.status(404).json({ error: "Video not found. Upload first." });
   const jobId = await enqueueAnalyzeVideo(videoId);
   res.json({ jobId });
 });
@@ -100,6 +102,24 @@ app.get("/api/jobs/:id", async (req, res) => {
     error: status.meta.error,
     videoId: status.videoId
   });
+});
+
+app.get("/api/clips/:videoId", async (req, res) => {
+  const videoId = req.params.videoId;
+  const metadata = await readVideoMetadata(videoId);
+  if (!metadata) return res.status(404).json({ error: "Video not found" });
+
+  res.json({
+    videoId,
+    clips: (metadata.clips || []).slice().sort((a, b) => b.viralScore - a.viralScore)
+  });
+});
+
+app.get("/api/videos/:id", async (req, res) => {
+  const videoId = req.params.id;
+  const metadata = await readVideoMetadata(videoId);
+  if (!metadata) return res.status(404).json({ error: "Video not found" });
+  res.json(metadata.video);
 });
 
 app.use("/uploads", express.static(uploadsDir));

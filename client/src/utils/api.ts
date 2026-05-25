@@ -28,6 +28,29 @@ export type AnalyzeResponse = {
   jobId: string;
 };
 
+export type ClipRecord = {
+  id: string;
+  videoId: string;
+  startTimeSec: number;
+  endTimeSec: number;
+  durationSec: number;
+  viralScore: number;
+  hookStrength: number;
+  reason: string;
+  suggestedTitle: string;
+  hashtags: string[];
+  transcriptExcerpt?: string;
+  paths: {
+    sourceClip: string;
+    thumbnail: string;
+  };
+};
+
+export type ClipsResponse = {
+  videoId: string;
+  clips: ClipRecord[];
+};
+
 export type ApiError = {
   error: string;
   details?: string;
@@ -57,6 +80,15 @@ export async function getJob(jobId: string): Promise<JobStatusResponse> {
     throw new Error(data?.error || "Failed to fetch job status");
   }
   return (await res.json()) as JobStatusResponse;
+}
+
+export async function getClips(videoId: string): Promise<ClipsResponse> {
+  const res = await fetch(apiUrl(`/api/clips/${encodeURIComponent(videoId)}`));
+  if (!res.ok) {
+    const data = (await res.json().catch(() => null)) as ApiError | null;
+    throw new Error(data?.error || "Failed to fetch clips");
+  }
+  return (await res.json()) as ClipsResponse;
 }
 
 export function uploadVideo(

@@ -69,6 +69,7 @@ export default function UploadPage() {
         signal: abortRef.current.signal
       });
       setVideoId(uploadRes.videoId);
+      localStorage.setItem("lastVideoId", uploadRes.videoId);
 
       setStage("analyzing");
       const analyzeRes = await analyzeVideo(uploadRes.videoId);
