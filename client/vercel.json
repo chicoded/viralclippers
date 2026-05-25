@@ -1,0 +1,20 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "https://backendclippers.onrender.com/api/:path*"
+    },
+    {
+      "source": "/uploads/:path*",
+      "destination": "https://backendclippers.onrender.com/uploads/:path*"
+    },
+    {
+      "source": "/outputs/:path*",
+      "destination": "https://backendclippers.onrender.com/outputs/:path*"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
